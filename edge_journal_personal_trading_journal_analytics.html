@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Edge Journal" />
+  <title>Edge Journal — Every trade has a lesson.</title>
+
+  <!-- Embedded SVG Apple Touch Icon & PWA Manifest -->
+  <link id="appleTouchIcon" rel="apple-touch-icon" href="" />
+  <link id="pwaManifest" rel="manifest" href="" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            oled: '#000000',
+            card: '#090D0B',
+            cardHover: '#0F1612',
+            borderLine: '#1A241E',
+            terraGreen: '#22C55E',
+            terraGold: '#F59E0B',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      background-color: #000000;
+      color: #F9FAFB;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #000000; }
+    ::-webkit-scrollbar-thumb { background: #1A241E; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #22C55E; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="bg-oled text-gray-100 min-h-screen flex flex-col lg:flex-row selection:bg-[#22C55E]/30 selection:text-emerald-200">
+
+  <!-- ==================== DESKTOP LEFT SIDEBAR (>= 1024px) ==================== -->
+  <aside class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 lg:left-0 bg-[#050806] border-r border-[#1A241E] z-30">
+    <!-- Brand Identity -->
+    <div class="p-5 border-b border-[#1A241E]">
+      <div class="flex items-center gap-3">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+          <rect width="40" height="40" rx="11" fill="#09120D" stroke="#22C55E" stroke-opacity="0.4" stroke-width="1.2"/>
+          <line x1="11" y1="8" x2="11" y2="32" stroke="#22C55E" stroke-width="1.6" stroke-linecap="round"/>
+          <rect x="8.5" y="14" width="5" height="12" rx="1.2" fill="#22C55E"/>
+          <line x1="20" y1="10" x2="20" y2="30" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/>
+          <rect x="17.5" y="16" width="5" height="8" rx="1.2" fill="#F59E0B"/>
+          <line x1="29" y1="6" x2="29" y2="27" stroke="#4ADE80" stroke-width="1.6" stroke-linecap="round"/>
+          <rect x="26.5" y="10" width="5" height="12" rx="1.2" fill="#4ADE80"/>
+        </svg>
+        <div>
+          <div class="font-extrabold tracking-tight text-base text-white leading-tight">EDGE <span class="text-[#22C55E]">JOURNAL</span></div>
+          <div class="text-[10px] text-[#F59E0B] font-medium tracking-wide mt-0.5">Every trade has a lesson.</div>
+        </div>
+      </div>
+
+      <!-- Primary Desktop CTA -->
+      <button onclick="openTradeModal()" class="mt-4 w-full py-2.5 px-4 rounded-xl bg-[#22C55E] hover:bg-emerald-400 text-black font-extrabold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg shadow-[#22C55E]/20 transition active:scale-[0.98]">
+        <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        <span>Catat Trade</span>
+      </button>
+    </div>
+
+    <!-- Sidebar Navigation Links -->
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <button onclick="switchTab('dashboard')" data-tab="dashboard" class="side-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button onclick="switchTab('journal')" data-tab="journal" class="side-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-[#0F1612] border border-transparent transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span>Jurnal</span>
+      </button>
+      <button onclick="switchTab('calendar')" data-tab="calendar" class="side-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-[#0F1612] border border-transparent transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>Kalender</span>
+      </button>
+      <button onclick="switchTab('calculator')" data-tab="calculator" class="side-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-[#0F1612] border border-transparent transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        <span>Kalkulator</span>
+      </button>
+      <button onclick="switchTab('analytics')" data-tab="analytics" class="side-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-[#0F1612] border border-transparent transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+        <span>Analitik</span>
+      </button>
+      <button onclick="switchTab('weekly')" data-tab="weekly" class="side-nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-[#0F1612] border border-transparent transition">
+        <span class="flex items-center gap-3">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span>Weekly AI</span>
+        </span>
+        <span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/30">GEMINI</span>
+      </button>
+      <button onclick="switchTab('settings')" data-tab="settings" class="side-nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-[#0F1612] border border-transparent transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span>Pengaturan</span>
+      </button>
+    </nav>
+
+    <!-- Cloud Sync Status Footer -->
+    <div class="p-4 border-t border-[#1A241E]">
+      <div onclick="switchTab('settings')" class="cursor-pointer bg-[#090D0B] border border-[#1A241E] hover:border-[#22C55E]/40 rounded-xl p-3 flex items-center justify-between transition">
+        <div class="flex items-center gap-2">
+          <span id="sidebarCloudDot" class="w-2 h-2 rounded-full bg-gray-500"></span>
+          <span id="sidebarCloudText" class="text-[11px] font-medium text-gray-400">Local Storage</span>
+        </div>
+        <span class="text-[10px] text-[#22C55E] font-semibold">Sync →</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT WRAPPER ==================== -->
+  <div class="flex-1 lg:pl-64 flex flex-col min-h-screen pb-24 lg:pb-8">
+
+    <!-- STICKY TOP CONTEXT BAR (Account Switcher, Market & Time Filters) -->
+    <header class="sticky top-0 z-20 bg-black/90 backdrop-blur-md border-b border-[#1A241E]">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3 space-y-2.5">
+        <!-- Row 1: Mobile Brand + Account Switcher -->
+        <div class="flex items-center justify-between gap-2">
+          <!-- Mobile/Tablet Logo -->
+          <div class="flex items-center gap-2.5 lg:hidden">
+            <svg width="34" height="34" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0">
+              <rect width="40" height="40" rx="10" fill="#09120D" stroke="#22C55E" stroke-opacity="0.4" stroke-width="1.2"/>
+              <line x1="11" y1="8" x2="11" y2="32" stroke="#22C55E" stroke-width="1.6" stroke-linecap="round"/>
+              <rect x="8.5" y="14" width="5" height="12" rx="1.2" fill="#22C55E"/>
+              <line x1="20" y1="10" x2="20" y2="30" stroke="#F59E0B" stroke-width="1.6" stroke-linecap="round"/>
+              <rect x="17.5" y="16" width="5" height="8" rx="1.2" fill="#F59E0B"/>
+              <line x1="29" y1="6" x2="29" y2="27" stroke="#4ADE80" stroke-width="1.6" stroke-linecap="round"/>
+              <rect x="26.5" y="10" width="5" height="12" rx="1.2" fill="#4ADE80"/>
+            </svg>
+            <div>
+              <div class="font-extrabold text-sm text-white leading-none">EDGE <span class="text-[#22C55E]">JOURNAL</span></div>
+              <div class="text-[9px] text-[#F59E0B] font-medium mt-0.5">Every trade has a lesson.</div>
+            </div>
+          </div>
+
+          <!-- Desktop Page Title -->
+          <div class="hidden lg:block">
+            <h1 id="desktopPageTitle" class="text-base font-extrabold text-white tracking-tight">Dashboard Performa</h1>
+            <p class="text-[11px] text-gray-400">Real-time multi-account analytics & discipline tracker</p>
+          </div>
+
+          <!-- Multi-Account Switcher + Quick Add Account -->
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 bg-[#090D0B] border border-[#1A241E] rounded-xl px-2.5 py-1.5">
+              <span class="w-2 h-2 rounded-full bg-[#22C55E]"></span>
+              <select id="accountSelect" onchange="handleAccountChange(this.value)" class="bg-transparent text-xs font-semibold text-white focus:outline-none max-w-[145px] sm:max-w-[210px] cursor-pointer"></select>
+            </div>
+            <button onclick="switchTab('settings')" title="Kelola Akun" class="p-2 rounded-xl bg-[#090D0B] border border-[#1A241E] hover:border-[#22C55E]/50 text-gray-300 hover:text-[#22C55E] transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Row 2: Market Filter Chips & Time Filter Chips -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-0.5">
+          <!-- Market Filters -->
+          <div class="flex items-center gap-1 bg-[#090D0B] border border-[#1A241E] p-1 rounded-xl">
+            <button onclick="setMarketFilter('ALL')" data-market="ALL" class="mkt-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#22C55E] text-black transition">All Market</button>
+            <button onclick="setMarketFilter('XAUUSD')" data-market="XAUUSD" class="mkt-btn px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">XAUUSD</button>
+            <button onclick="setMarketFilter('CRYPTO')" data-market="CRYPTO" class="mkt-btn px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Crypto</button>
+          </div>
+
+          <!-- Time Filters -->
+          <div class="flex items-center gap-1 bg-[#090D0B] border border-[#1A241E] p-1 rounded-xl">
+            <button onclick="setTimeFilter('DAY')" data-time="DAY" class="time-btn px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Day</button>
+            <button onclick="setTimeFilter('WEEK')" data-time="WEEK" class="time-btn px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Week</button>
+            <button onclick="setTimeFilter('MONTH')" data-time="MONTH" class="time-btn px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Month</button>
+            <button onclick="setTimeFilter('ALL')" data-time="ALL" class="time-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#22C55E] text-black transition">All</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tablet Sub-Nav (768px - 1023px) -->
+      <div class="hidden md:flex lg:hidden max-w-7xl mx-auto px-6 border-t border-[#1A241E]/60 gap-2 overflow-x-auto no-scrollbar">
+        <button onclick="switchTab('dashboard')" data-tab="dashboard" class="tab-pill px-3 py-2 text-xs font-bold border-b-2 border-[#22C55E] text-[#22C55E]">Dashboard</button>
+        <button onclick="switchTab('journal')" data-tab="journal" class="tab-pill px-3 py-2 text-xs font-bold border-b-2 border-transparent text-gray-400">Jurnal</button>
+        <button onclick="switchTab('calendar')" data-tab="calendar" class="tab-pill px-3 py-2 text-xs font-bold border-b-2 border-transparent text-gray-400">Kalender</button>
+        <button onclick="switchTab('calculator')" data-tab="calculator" class="tab-pill px-3 py-2 text-xs font-bold border-b-2 border-transparent text-gray-400">Kalkulator</button>
+        <button onclick="switchTab('analytics')" data-tab="analytics" class="tab-pill px-3 py-2 text-xs font-bold border-b-2 border-transparent text-gray-400">Analitik</button>
+        <button onclick="switchTab('weekly')" data-tab="weekly" class="tab-pill px-3 py-2 text-xs font-bold border-b-2 border-transparent text-gray-400">Weekly AI</button>
+        <button onclick="switchTab('settings')" data-tab="settings" class="tab-pill px-3 py-2 text-xs font-bold border-b-2 border-transparent text-gray-400">Pengaturan</button>
+      </div>
+    </header>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer" class="fixed top-20 right-4 left-4 sm:left-auto sm:w-96 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ==================== TAB VIEWS CONTAINER ==================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 space-y-5">
+
+      <!-- ==================== 1. DASHBOARD VIEW ==================== -->
+      <section id="view-dashboard" class="space-y-5">
+        <!-- Daily Drawdown Guard & Target Progress Banner -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <!-- Daily Drawdown Guard -->
+          <div id="ddGuardBanner" class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-3.5 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div id="ddGuardIcon" class="w-9 h-9 rounded-xl bg-[#22C55E]/15 text-[#22C55E] flex items-center justify-center shrink-0 font-bold text-sm">🛡️</div>
+              <div>
+                <div class="text-xs font-bold text-white flex items-center gap-2">
+                  <span>Daily Drawdown Guard</span>
+                  <span id="ddGuardStatus" class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#22C55E]/20 text-[#22C55E]">AMAN</span>
+                </div>
+                <p id="ddGuardDesc" class="text-[11px] text-gray-400 mt-0.5">PnL Hari Ini: $0.00 • Batas Max Loss Harian: 3.0%</p>
+              </div>
+            </div>
+            <div id="ddGuardPct" class="font-mono font-extrabold text-sm text-[#22C55E]">0.00%</div>
+          </div>
+
+          <!-- Monthly / Account Target Progress -->
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-3.5 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-bold text-white">Target Profit Progress</span>
+              <span id="targetProgressLabel" class="font-mono font-bold text-[#F59E0B]">0.0% / 10.0%</span>
+            </div>
+            <div class="w-full h-2.5 bg-black rounded-full overflow-hidden border border-[#1A241E]">
+              <div id="targetProgressBar" class="h-full bg-gradient-to-r from-[#22C55E] to-[#F59E0B] rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-gray-400 font-mono">
+              <span id="targetCurrentUsd">Net: +$0.00</span>
+              <span id="targetGoalUsd">Target: +$0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Core KPI Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4">
+            <div class="text-[11px] text-gray-400 font-medium">Current Balance</div>
+            <div id="kpiBalance" class="text-lg sm:text-2xl font-extrabold font-mono text-white mt-1">$0.00</div>
+            <div id="kpiNetPnl" class="text-xs font-mono font-semibold text-[#22C55E] mt-0.5">+$0.00 Net</div>
+          </div>
+
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4">
+            <div class="text-[11px] text-gray-400 font-medium">Account Growth</div>
+            <div id="kpiGrowth" class="text-lg sm:text-2xl font-extrabold font-mono text-[#22C55E] mt-1">+0.00%</div>
+            <div id="kpiInitialCap" class="text-xs font-mono text-gray-400 mt-0.5">Modal: $0.00</div>
+          </div>
+
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4">
+            <div class="text-[11px] text-gray-400 font-medium">Win Rate</div>
+            <div id="kpiWinRate" class="text-lg sm:text-2xl font-extrabold font-mono text-white mt-1">0.0%</div>
+            <div id="kpiWinLoss" class="text-xs text-gray-400 mt-0.5">0W / 0L (0 Trade)</div>
+          </div>
+
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4">
+            <div class="text-[11px] text-gray-400 font-medium">Profit Factor</div>
+            <div id="kpiProfitFactor" class="text-lg sm:text-2xl font-extrabold font-mono text-[#F59E0B] mt-1">0.00</div>
+            <div id="kpiSopAvg" class="text-xs text-gray-400 mt-0.5">SOP Disiplin: 0%</div>
+          </div>
+        </div>
+
+        <!-- Charts Row: Equity Curve + Daily PnL Bar Chart -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- Equity Curve -->
+          <div class="lg:col-span-7 bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div>
+                <h2 class="text-sm font-bold text-white">Equity Curve</h2>
+                <p class="text-[11px] text-gray-400">Kurva pertumbuhan kumulatif</p>
+              </div>
+              <div class="inline-flex rounded-xl bg-black border border-[#1A241E] p-1">
+                <button id="eqBtnDollar" onclick="setEquityUnit('dollar')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#22C55E] text-black transition">Nominal ($)</button>
+                <button id="eqBtnPercent" onclick="setEquityUnit('percent')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Growth (%)</button>
+              </div>
+            </div>
+            <div id="equitySvgWrap" class="w-full h-52 sm:h-60"></div>
+          </div>
+
+          <!-- Daily PnL Bar Chart -->
+          <div class="lg:col-span-5 bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+            <div class="mb-3">
+              <h2 class="text-sm font-bold text-white">Daily PnL Bars</h2>
+              <p class="text-[11px] text-gray-400">Profit & loss harian terbaru</p>
+            </div>
+            <div id="dailyBarWrap" class="w-full h-52 sm:h-60 flex items-end gap-2 pt-6"></div>
+          </div>
+        </div>
+
+        <!-- Account Portfolio Cards -->
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-white">Portofolio Akun</h2>
+            <button onclick="switchTab('settings')" class="text-xs text-[#22C55E] font-semibold hover:underline">+ Kelola Akun</button>
+          </div>
+          <div id="portfolioCardsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+        </div>
+
+        <!-- Recent Trades -->
+        <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-white">Transaksi Terbaru</h2>
+            <button onclick="switchTab('journal')" class="text-xs font-semibold text-[#22C55E] hover:underline">Semua Jurnal →</button>
+          </div>
+          <div id="recentTradesContainer" class="space-y-2.5"></div>
+        </div>
+      </section>
+
+      <!-- ==================== 2. JURNAL VIEW ==================== -->
+      <section id="view-journal" class="hidden space-y-4">
+        <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-2.5">
+          <div class="flex flex-wrap items-center gap-2 flex-1">
+            <input type="text" id="journalSearch" oninput="renderJournalView()" placeholder="Cari pair, #tag, catatan..." class="bg-black border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3.5 py-2 text-xs text-white w-full sm:w-60 focus:outline-none" />
+            <select id="journalSessionFilter" onchange="renderJournalView()" class="bg-black border border-[#1A241E] rounded-xl px-3 py-2 text-xs text-gray-200 focus:outline-none">
+              <option value="ALL">Semua Sesi</option>
+              <option value="Asia">Asia (06:00–13:59)</option>
+              <option value="London">London (14:00–18:59)</option>
+              <option value="New York">New York (19:00–03:59)</option>
+            </select>
+            <select id="journalResultFilter" onchange="renderJournalView()" class="bg-black border border-[#1A241E] rounded-xl px-3 py-2 text-xs text-gray-200 focus:outline-none">
+              <option value="ALL">Semua Hasil</option>
+              <option value="WIN">Win (+)</option>
+              <option value="LOSS">Loss (-)</option>
+            </select>
+          </div>
+          <button onclick="openTradeModal()" class="px-4 py-2 rounded-xl bg-[#22C55E] hover:bg-emerald-400 text-black font-extrabold text-xs transition">+ Catat Trade</button>
+        </div>
+
+        <div id="journalListContainer" class="space-y-2.5"></div>
+      </section>
+
+      <!-- ==================== 3. KALENDER VIEW ==================== -->
+      <section id="view-calendar" class="hidden space-y-4">
+        <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 id="calMonthTitle" class="text-base font-extrabold text-white">November 2026</h2>
+              <p class="text-xs text-gray-400">Heatmap PnL Harian & Jumlah Transaksi</p>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="changeCalMonth(-1)" class="px-3 py-1.5 rounded-xl bg-black border border-[#1A241E] hover:border-[#22C55E] text-xs font-bold">← Prev</button>
+              <button onclick="changeCalMonth(1)" class="px-3 py-1.5 rounded-xl bg-black border border-[#1A241E] hover:border-[#22C55E] text-xs font-bold">Next →</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1.5 text-center text-[11px] font-bold text-gray-500">
+            <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
+          </div>
+          <div id="calHeatmapGrid" class="grid grid-cols-7 gap-1.5 sm:gap-2"></div>
+        </div>
+      </section>
+
+      <!-- ==================== 4. KALKULATOR VIEW ==================== -->
+      <section id="view-calculator" class="hidden space-y-5">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <!-- Position Size & Risk Calculator -->
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 space-y-4">
+            <div>
+              <h2 class="text-base font-bold text-white">Kalkulator Lot & Risiko</h2>
+              <p class="text-xs text-gray-400">XAUUSD & Crypto Futures Position Sizing</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] text-gray-400 mb-1">Saldo Akun ($)</label>
+                <input type="number" id="calcAccBal" value="5000" oninput="runLotCalc()" class="w-full bg-black border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3 py-2 text-sm font-mono text-white focus:outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] text-gray-400 mb-1">Risk per Trade (%)</label>
+                <input type="number" id="calcRiskPercent" value="1.0" step="0.1" oninput="runLotCalc()" class="w-full bg-black border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3 py-2 text-sm font-mono text-white focus:outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] text-gray-400 mb-1">Instrumen</label>
+                <select id="calcInstrument" onchange="runLotCalc()" class="w-full bg-black border border-[#1A241E] rounded-xl px-3 py-2 text-xs sm:text-sm text-white focus:outline-none">
+                  <option value="XAUUSD">XAUUSD (Gold — $10/pip/lot)</option>
+                  <option value="CRYPTO">Crypto Futures (USDT Size)</option>
+                </select>
+              </div>
+              <div>
+                <label id="calcSlLabel" class="block text-[11px] text-gray-400 mb-1">Stop Loss (Pips)</label>
+                <input type="number" id="calcSlDistance" value="25" oninput="runLotCalc()" class="w-full bg-black border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3 py-2 text-sm font-mono text-white focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="bg-black border border-[#22C55E]/30 rounded-xl p-4 grid grid-cols-2 gap-3">
+              <div>
+                <div class="text-[11px] text-gray-400">Rekomendasi Ukuran</div>
+                <div id="calcLotResult" class="text-xl sm:text-2xl font-extrabold font-mono text-[#22C55E]">0.20 Lot</div>
+              </div>
+              <div>
+                <div class="text-[11px] text-gray-400">Maksimal Risiko ($)</div>
+                <div id="calcRiskDollarResult" class="text-xl sm:text-2xl font-extrabold font-mono text-rose-400">-$50.00</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compounding Simulator -->
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 space-y-4">
+            <div>
+              <h2 class="text-base font-bold text-white">Compounding Simulator</h2>
+              <p class="text-xs text-gray-400">Simulasi pertumbuhan saldo mingguan</p>
+            </div>
+            <div class="grid grid-cols-3 gap-2.5">
+              <div>
+                <label class="block text-[11px] text-gray-400 mb-1">Modal ($)</label>
+                <input type="number" id="compInit" value="5000" oninput="runCompCalc()" class="w-full bg-black border border-[#1A241E] rounded-xl px-3 py-2 text-sm font-mono text-white focus:outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] text-gray-400 mb-1">Gain/Minggu (%)</label>
+                <input type="number" id="compWeeklyPct" value="3" step="0.5" oninput="runCompCalc()" class="w-full bg-black border border-[#1A241E] rounded-xl px-3 py-2 text-sm font-mono text-white focus:outline-none" />
+              </div>
+              <div>
+                <label class="block text-[11px] text-gray-400 mb-1">Minggu</label>
+                <input type="number" id="compNumWeeks" value="12" min="1" max="52" oninput="runCompCalc()" class="w-full bg-black border border-[#1A241E] rounded-xl px-3 py-2 text-sm font-mono text-white focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="bg-black border border-[#1A241E] rounded-xl p-4 flex items-center justify-between">
+              <div>
+                <div class="text-[11px] text-gray-400">Proyeksi Saldo Akhir</div>
+                <div id="compFinalBal" class="text-xl sm:text-2xl font-extrabold font-mono text-[#22C55E]">$7,128.80</div>
+              </div>
+              <div class="text-right">
+                <div class="text-[11px] text-gray-400">Net Growth</div>
+                <div id="compNetGain" class="text-sm font-bold font-mono text-[#F59E0B]">+$2,128.80 (+42.6%)</div>
+              </div>
+            </div>
+            <div id="compStepsGrid" class="grid grid-cols-3 gap-2 text-center"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 5. ANALITIK VIEW ==================== -->
+      <section id="view-analytics" class="hidden space-y-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Session Edge (Asia / London / NY WIB) -->
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white">Session Edge (Auto-WIB)</h3>
+            <div id="analyticsSessionList" class="space-y-2.5"></div>
+          </div>
+
+          <!-- Day-of-Week Performance -->
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white">Performa Hari (Day of Week)</h3>
+            <div id="analyticsDayList" class="space-y-2.5"></div>
+          </div>
+
+          <!-- Setup Tag Ranking -->
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white">Ranking Setup Tag</h3>
+            <div id="analyticsSetupList" class="space-y-2.5"></div>
+          </div>
+
+          <!-- SOP Discipline Comparison -->
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white">Perbandingan Disiplin SOP</h3>
+            <div id="analyticsSopList" class="space-y-2.5"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 6. WEEKLY AI SCORECARD VIEW ==================== -->
+      <section id="view-weekly" class="hidden space-y-4">
+        <!-- 1-Screen Dense Weekly Scorecard Card (Screenshot Ready) -->
+        <div class="bg-[#090D0B] border border-[#22C55E]/40 rounded-2xl p-4 sm:p-6 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#1A241E] pb-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-[#22C55E]/15 border border-[#22C55E]/40 flex items-center justify-center font-extrabold text-[#22C55E] text-xs">EJ</div>
+              <div>
+                <h2 class="text-sm sm:text-base font-extrabold text-white">EDGE JOURNAL — WEEKLY SCORECARD</h2>
+                <p id="weeklyScorecardSub" class="text-[11px] text-gray-400">Ringkasan Performa & Evaluasi Disiplin</p>
+              </div>
+            </div>
+            <button onclick="copyWeeklyGeminiPrompt()" class="px-4 py-2.5 rounded-xl bg-[#22C55E] hover:bg-emerald-400 text-black font-extrabold text-xs shadow-lg shadow-[#22C55E]/20 transition flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              <span>Salin Laporan & Prompt untuk Gemini</span>
+            </button>
+          </div>
+
+          <!-- Dense Metrics Row -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+            <div class="bg-black border border-[#1A241E] rounded-xl p-3">
+              <div class="text-[10px] text-gray-400">Net PnL</div>
+              <div id="scNetPnl" class="text-base font-extrabold font-mono text-[#22C55E]">+$0.00</div>
+            </div>
+            <div class="bg-black border border-[#1A241E] rounded-xl p-3">
+              <div class="text-[10px] text-gray-400">Growth</div>
+              <div id="scGrowth" class="text-base font-extrabold font-mono text-[#22C55E]">+0.00%</div>
+            </div>
+            <div class="bg-black border border-[#1A241E] rounded-xl p-3">
+              <div class="text-[10px] text-gray-400">Win Rate</div>
+              <div id="scWinRate" class="text-base font-extrabold font-mono text-white">0%</div>
+            </div>
+            <div class="bg-black border border-[#1A241E] rounded-xl p-3">
+              <div class="text-[10px] text-gray-400">Best Session</div>
+              <div id="scBestSession" class="text-base font-extrabold text-[#F59E0B]">London</div>
+            </div>
+            <div class="bg-black border border-[#1A241E] rounded-xl p-3 col-span-2 sm:col-span-1">
+              <div class="text-[10px] text-gray-400">SOP Discipline</div>
+              <div id="scSopRate" class="text-base font-extrabold font-mono text-[#22C55E]">100%</div>
+            </div>
+          </div>
+
+          <!-- Raw Prompt Preview -->
+          <textarea id="weeklyPromptBox" readonly rows="10" class="w-full bg-black border border-[#1A241E] rounded-xl p-3.5 font-mono text-[11px] text-gray-200 leading-relaxed focus:outline-none"></textarea>
+        </div>
+      </section>
+
+      <!-- ==================== 7. PENGATURAN VIEW ==================== -->
+      <section id="view-settings" class="hidden space-y-5">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <!-- Manage Accounts -->
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 space-y-4">
+            <h2 class="text-base font-bold text-white">Akun Trading & Target</h2>
+            <div id="settingsAccountsList" class="space-y-2"></div>
+
+            <form onsubmit="createAccount(event)" class="pt-3 border-t border-[#1A241E] space-y-3">
+              <div class="text-xs font-bold text-[#22C55E]">+ Tambah Akun Baru</div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <input type="text" id="accFormName" required placeholder="Nama Akun" class="bg-black border border-[#1A241E] rounded-xl px-3 py-2 text-xs text-white focus:outline-none" />
+                <input type="number" id="accFormBalance" required placeholder="Modal Awal ($)" class="bg-black border border-[#1A241E] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none" />
+                <input type="number" id="accFormTargetPct" value="10" step="0.5" placeholder="Target (%)" class="bg-black border border-[#1A241E] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none" />
+              </div>
+              <button type="submit" class="w-full py-2.5 rounded-xl bg-[#22C55E] hover:bg-emerald-400 text-black font-extrabold text-xs transition">Simpan Akun</button>
+            </form>
+          </div>
+
+          <!-- Cloud Auto-Sync & Backup / Restore / Export -->
+          <div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-4 sm:p-5 space-y-4">
+            <div>
+              <h2 class="text-base font-bold text-white">Cloud Auto-Sync & Data Backup</h2>
+              <p class="text-xs text-gray-400">Google Sheets Webhook & Export/Import Lokal</p>
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-xs font-medium text-gray-300">Google Apps Script Webhook URL</label>
+              <input type="url" id="settingsWebhookInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-black border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none" />
+              <div class="flex gap-2">
+                <button onclick="saveCloudWebhook()" class="px-4 py-2 rounded-xl bg-[#22C55E] text-black font-bold text-xs">Simpan Webhook</button>
+                <button onclick="syncAllToCloud()" class="px-4 py-2 rounded-xl bg-black border border-[#1A241E] hover:border-[#22C55E] text-xs font-semibold text-[#22C55E]">Sync Sekarang</button>
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-[#1A241E] space-y-2.5">
+              <div class="text-xs font-bold text-gray-300">Backup, Restore & Export CSV</div>
+              <div class="grid grid-cols-3 gap-2">
+                <button onclick="exportJsonBackup()" class="py-2.5 px-3 rounded-xl bg-black border border-[#1A241E] hover:border-[#22C55E] text-xs font-semibold text-white">Backup JSON</button>
+                <label class="py-2.5 px-3 rounded-xl bg-black border border-[#1A241E] hover:border-[#F59E0B] text-xs font-semibold text-[#F59E0B] text-center cursor-pointer">
+                  Restore JSON
+                  <input type="file" accept=".json" onchange="importJsonBackup(event)" class="hidden" />
+                </label>
+                <button onclick="exportCsvFile()" class="py-2.5 px-3 rounded-xl bg-black border border-[#1A241E] hover:border-[#22C55E] text-xs font-semibold text-[#22C55E]">Export CSV</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==================== MOBILE BOTTOM NAVIGATION BAR (< 768px) ==================== -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#050806]/95 backdrop-blur-md border-t border-[#1A241E] px-2 py-1.5 flex items-center justify-around">
+    <button onclick="switchTab('dashboard')" data-tab="dashboard" class="mob-nav-btn flex flex-col items-center gap-0.5 py-1 px-2 text-[#22C55E]">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="text-[10px] font-bold">Home</span>
+    </button>
+    <button onclick="switchTab('journal')" data-tab="journal" class="mob-nav-btn flex flex-col items-center gap-0.5 py-1 px-2 text-gray-400">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <span class="text-[10px] font-semibold">Jurnal</span>
+    </button>
+
+    <!-- Center (+) Floating Action Button -->
+    <button onclick="openTradeModal()" aria-label="Catat Trade" class="-mt-6 w-13 h-13 p-3.5 rounded-2xl bg-[#22C55E] text-black shadow-lg shadow-[#22C55E]/30 active:scale-95 transition">
+      <svg class="w-6 h-6 stroke-[2.6]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+    </button>
+
+    <button onclick="switchTab('analytics')" data-tab="analytics" class="mob-nav-btn flex flex-col items-center gap-0.5 py-1 px-2 text-gray-400">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      <span class="text-[10px] font-semibold">Analitik</span>
+    </button>
+    <button onclick="switchTab('weekly')" data-tab="weekly" class="mob-nav-btn flex flex-col items-center gap-0.5 py-1 px-2 text-gray-400">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      <span class="text-[10px] font-semibold">AI Review</span>
+    </button>
+  </nav>
+
+  <!-- ==================== MODAL: CATAT TRADE (RESTORED CLEAN VERSION) ==================== -->
+  <div id="tradeModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-[#090D0B] border border-[#1A241E] w-full max-w-lg rounded-2xl shadow-2xl my-auto max-h-[90vh] overflow-y-auto">
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-[#1A241E] flex items-center justify-between">
+        <div>
+          <h3 id="modalTitle" class="text-base font-extrabold text-white">Catat Trade</h3>
+          <p class="text-[11px] text-gray-400">Every trade has a lesson.</p>
+        </div>
+        <button type="button" onclick="closeTradeModal()" class="p-1.5 rounded-lg bg-black border border-[#1A241E] text-gray-400 hover:text-white">✕</button>
+      </div>
+
+      <!-- Modal Form -->
+      <form id="tradeForm" onsubmit="handleSaveTrade(event)" class="p-5 space-y-4">
+        <input type="hidden" id="editTradeId" />
+
+        <!-- Mode Toggle: Catat Cepat (PnL Langsung) vs Detail Lengkap -->
+        <div class="grid grid-cols-2 gap-1.5 bg-black p-1 rounded-xl border border-[#1A241E]">
+          <button type="button" id="btnModeQuick" onclick="switchEntryMode('quick')" class="py-2 px-3 rounded-lg text-xs font-bold bg-[#22C55E] text-black transition">
+            Catat Cepat (PnL Langsung)
+          </button>
+          <button type="button" id="btnModeDetail" onclick="switchEntryMode('detail')" class="py-2 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition">
+            Detail Lengkap
+          </button>
+        </div>
+
+        <!-- Account & WIB DateTime -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-medium text-gray-400 mb-1">Akun Trading</label>
+            <select id="formAccountId" onchange="updateLiveGrowthPreview()" class="w-full bg-black border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3 py-2 text-xs text-white focus:outline-none"></select>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-[11px] font-medium text-gray-400">Waktu (WIB)</label>
+              <span id="formSessionBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-[#22C55E]/15 text-[#22C55E]">London</span>
+            </div>
+            <input type="datetime-local" id="formDateTime" required onchange="refreshFormSession()" class="w-full bg-black border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none" />
+          </div>
+        </div>
+
+        <!-- Pair Input + Quick Pair Chips -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="text-[11px] font-medium text-gray-400">Pair / Instrumen</label>
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="selectQuickPair('XAUUSD')" class="px-2 py-0.5 rounded-md bg-black border border-[#1A241E] hover:border-[#F59E0B] text-[10px] font-mono text-[#F59E0B]">XAUUSD</button>
+              <button type="button" onclick="selectQuickPair('BTCUSDT')" class="px-2 py-0.5 rounded-md bg-black border border-[#1A241E] hover:border-[#22C55E] text-[10px] font-mono text-gray-300">BTCUSDT</button>
+              <button type="button" onclick="selectQuickPair('SOLUSDT')" class="px-2 py-0.5 rounded-md bg-black border border-[#1A241E] hover:border-[#22C55E] text-[10px] font-mono text-gray-300">SOLUSDT</button>
+              <button type="button" onclick="selectQuickPair('ETHUSDT')" class="px-2 py-0.5 rounded-md bg-black border border-[#1A241E] hover:border-[#22C55E] text-[10px] font-mono text-gray-300">ETHUSDT</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2.5">
+            <input type="text" id="formPair" required placeholder="XAUUSD" class="col-span-2 bg-black border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3 py-2 text-sm font-mono uppercase text-white focus:outline-none" />
+            <div class="grid grid-cols-2 gap-1 bg-black p-1 rounded-xl border border-[#1A241E]">
+              <button type="button" id="btnDirBuy" onclick="setFormDirection('BUY')" class="rounded-lg text-xs font-extrabold bg-[#22C55E] text-black">BUY</button>
+              <button type="button" id="btnDirSell" onclick="setFormDirection('SELL')" class="rounded-lg text-xs font-extrabold text-gray-400">SELL</button>
+            </div>
+            <input type="hidden" id="formDirection" value="BUY" />
+          </div>
+        </div>
+
+        <!-- QUICK MODE: + Profit / - Loss Toggle + Amount + Live Growth (%) -->
+        <div id="sectionQuickMode" class="bg-black border border-[#1A241E] rounded-xl p-3.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-semibold text-gray-300">Hasil Transaksi</span>
+            <div class="grid grid-cols-2 gap-1 bg-[#090D0B] p-1 rounded-lg border border-[#1A241E]">
+              <button type="button" id="btnSignProfit" onclick="setPnlSign(1)" class="px-2.5 py-1 rounded text-[11px] font-extrabold bg-[#22C55E] text-black">+ Profit</button>
+              <button type="button" id="btnSignLoss" onclick="setPnlSign(-1)" class="px-2.5 py-1 rounded text-[11px] font-extrabold text-gray-400">- Loss</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] text-gray-400 mb-1">Nominal ($ USD)</label>
+              <input type="number" step="0.01" min="0" id="formQuickAmount" placeholder="150.00" oninput="updateLiveGrowthPreview()" class="w-full bg-[#090D0B] border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3 py-2 text-sm font-mono font-bold text-white focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-gray-400 mb-1">Live Growth (%)</label>
+              <div id="liveGrowthDisplay" class="w-full bg-[#090D0B] border border-[#1A241E] rounded-xl px-3 py-2 text-sm font-mono font-bold text-[#22C55E]">+0.00%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DETAIL MODE: Entry / Exit / Size Auto-Calc -->
+        <div id="sectionDetailMode" class="hidden bg-black border border-[#1A241E] rounded-xl p-3.5 space-y-3">
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] text-gray-400 mb-1">Size / Lot</label>
+              <input type="number" step="0.01" id="formLotSize" placeholder="0.10" oninput="calcDetailModePnl()" class="w-full bg-[#090D0B] border border-[#1A241E] rounded-xl px-2.5 py-2 text-xs font-mono text-white focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-gray-400 mb-1">Entry Price</label>
+              <input type="number" step="any" id="formEntryPrice" placeholder="2650.00" oninput="calcDetailModePnl()" class="w-full bg-[#090D0B] border border-[#1A241E] rounded-xl px-2.5 py-2 text-xs font-mono text-white focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-gray-400 mb-1">Exit Price</label>
+              <input type="number" step="any" id="formExitPrice" placeholder="2665.00" oninput="calcDetailModePnl()" class="w-full bg-[#090D0B] border border-[#1A241E] rounded-xl px-2.5 py-2 text-xs font-mono text-white focus:outline-none" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[10px] text-gray-400 mb-1">Contract Multiplier</label>
+              <select id="formMultiplier" onchange="calcDetailModePnl()" class="w-full bg-[#090D0B] border border-[#1A241E] rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none">
+                <option value="100">XAUUSD (100 oz)</option>
+                <option value="1">Crypto / Index (1 Unit)</option>
+                <option value="100000">Forex Major (100k)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] text-gray-400 mb-1">Calculated PnL ($)</label>
+              <input type="number" step="0.01" id="formDetailPnl" placeholder="0.00" oninput="updateLiveGrowthPreview()" class="w-full bg-[#090D0B] border border-[#22C55E]/40 rounded-xl px-3 py-2 text-xs font-mono font-bold text-[#22C55E] focus:outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Setup Tags -->
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-medium text-gray-400">Setup Tag</label>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="toggleSetupTag('#OrderBlock')" class="tag-chip px-2.5 py-1 rounded-lg bg-black border border-[#1A241E] text-[11px] font-mono text-gray-300 hover:border-[#22C55E]">#OrderBlock</button>
+            <button type="button" onclick="toggleSetupTag('#Fibonacci')" class="tag-chip px-2.5 py-1 rounded-lg bg-black border border-[#1A241E] text-[11px] font-mono text-gray-300 hover:border-[#22C55E]">#Fibonacci</button>
+            <button type="button" onclick="toggleSetupTag('#SnR')" class="tag-chip px-2.5 py-1 rounded-lg bg-black border border-[#1A241E] text-[11px] font-mono text-gray-300 hover:border-[#22C55E]">#SnR</button>
+            <button type="button" onclick="toggleSetupTag('#RSI')" class="tag-chip px-2.5 py-1 rounded-lg bg-black border border-[#1A241E] text-[11px] font-mono text-gray-300 hover:border-[#22C55E]">#RSI</button>
+            <button type="button" onclick="toggleSetupTag('#Breakout')" class="tag-chip px-2.5 py-1 rounded-lg bg-black border border-[#1A241E] text-[11px] font-mono text-gray-300 hover:border-[#22C55E]">#Breakout</button>
+            <button type="button" onclick="toggleSetupTag('#Scalping')" class="tag-chip px-2.5 py-1 rounded-lg bg-black border border-[#1A241E] text-[11px] font-mono text-gray-300 hover:border-[#22C55E]">#Scalping</button>
+            <button type="button" onclick="toggleSetupTag('#FOMO')" class="tag-chip px-2.5 py-1 rounded-lg bg-black border border-[#1A241E] text-[11px] font-mono text-rose-300 hover:border-rose-500">#FOMO</button>
+          </div>
+          <input type="text" id="formSetupInput" placeholder="#OrderBlock" class="w-full bg-black border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none" />
+        </div>
+
+        <!-- 4-Item SOP Discipline Checklist -->
+        <div class="bg-black border border-[#1A241E] rounded-xl p-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-gray-300">Checklist Disiplin SOP</span>
+            <span id="formSopBadge" class="text-[11px] font-mono font-bold text-[#22C55E]">4/4 SOP</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-[11px] text-gray-300">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="form-sop-cb accent-[#22C55E]" checked onchange="updateFormSopLabel()" />
+              <span>Sesuai Tren HTF</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="form-sop-cb accent-[#22C55E]" checked onchange="updateFormSopLabel()" />
+              <span>Konfirmasi Entry</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="form-sop-cb accent-[#22C55E]" checked onchange="updateFormSopLabel()" />
+              <span>Risk Terukur</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" class="form-sop-cb accent-[#22C55E]" checked onchange="updateFormSopLabel()" />
+              <span>SL Disiplin</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Lesson Learned / Notes -->
+        <div>
+          <label class="block text-[11px] font-medium text-gray-400 mb-1">Lesson Learned / Catatan</label>
+          <textarea id="formNotes" rows="2" placeholder="Apa pelajaran dari trade ini?" class="w-full bg-black border border-[#1A241E] focus:border-[#22C55E] rounded-xl px-3 py-2 text-xs text-white focus:outline-none"></textarea>
+        </div>
+
+        <!-- Standard Single Submit Button at Bottom of Scrollable Form -->
+        <button type="submit" class="w-full py-3 rounded-xl bg-[#22C55E] hover:bg-emerald-400 text-black font-extrabold text-sm shadow-lg shadow-[#22C55E]/20 transition active:scale-[0.99]">
+          Simpan Trade
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ==================== PWA MANIFEST & APPLE TOUCH ICON ====================
+    (function initPwaAssets() {
+      const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="#000000"/><line x1="11" y1="8" x2="11" y2="32" stroke="#22C55E" stroke-width="2"/><rect x="8.5" y="14" width="5" height="12" rx="1.2" fill="#22C55E"/><line x1="20" y1="10" x2="20" y2="30" stroke="#F59E0B" stroke-width="2"/><rect x="17.5" y="16" width="5" height="8" rx="1.2" fill="#F59E0B"/><line x1="29" y1="6" x2="29" y2="27" stroke="#4ADE80" stroke-width="2"/><rect x="26.5" y="10" width="5" height="12" rx="1.2" fill="#4ADE80"/></svg>`;
+      const iconUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(iconSvg);
+      const appleLink = document.getElementById('appleTouchIcon');
+      if (appleLink) appleLink.href = iconUrl;
+
+      const manifestObj = {
+        name: 'Edge Journal',
+        short_name: 'EdgeJournal',
+        description: 'Every trade has a lesson.',
+        start_url: '.',
+        display: 'standalone',
+        background_color: '#000000',
+        theme_color: '#000000',
+        icons: [{ src: iconUrl, sizes: '192x192', type: 'image/svg+xml' }]
+      };
+      const manifestLink = document.getElementById('pwaManifest');
+      if (manifestLink) {
+        manifestLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestObj));
+      }
+    })();
+
+    // ==================== STATE & DEFAULT DATA ====================
+    const STORE_KEY = 'edge_journal_terramori_v1';
+
+    const seedState = {
+      activeAccountId: 'ALL',
+      marketFilter: 'ALL',
+      timeFilter: 'ALL',
+      webhookUrl: '',
+      accounts: [
+        { id: 'acc_xau', name: 'Real XAU/USD', initialBalance: 5000, targetPct: 10 },
+        { id: 'acc_prop', name: 'Prop Firm Challenge', initialBalance: 50000, targetPct: 8 },
+        { id: 'acc_crypto', name: 'Crypto Futures', initialBalance: 3000, targetPct: 15 }
+      ],
+      trades: [
+        {
+          id: 't1',
+          accountId: 'acc_xau',
+          dateTime: '2026-11-13T14:40',
+          session: 'London',
+          pair: 'XAUUSD',
+          direction: 'BUY',
+          pnlUsd: 212.50,
+          setup: '#Breakout',
+          sopScore: 4,
+          notes: 'Mengikuti momentum utama setelah rilis data ekonomi.'
+        },
+        {
+          id: 't2',
+          accountId: 'acc_crypto',
+          dateTime: '2026-11-12T10:30',
+          session: 'Asia',
+          pair: 'SOLUSDT',
+          direction: 'SELL',
+          pnlUsd: 150.00,
+          setup: '#SnR',
+          sopScore: 4,
+          notes: 'Volume Asia tinggi saat breakdown support H4.'
+        },
+        {
+          id: 't3',
+          accountId: 'acc_prop',
+          dateTime: '2026-11-11T16:05',
+          session: 'London',
+          pair: 'XAUUSD',
+          direction: 'BUY',
+          pnlUsd: 760.00,
+          setup: '#OrderBlock',
+          sopScore: 4,
+          notes: 'Eksekusi prop firm terbaik minggu ini. Sesuai trading plan dari awal sampai TP.'
+        },
+        {
+          id: 't4',
+          accountId: 'acc_xau',
+          dateTime: '2026-11-09T20:45',
+          session: 'New York',
+          pair: 'XAUUSD',
+          direction: 'SELL',
+          pnlUsd: -90.00,
+          setup: '#FOMO',
+          sopScore: 2,
+          notes: 'Melawan tren bullish kuat tanpa konfirmasi CHoCH. Untung SL terpasang disiplin.'
+        },
+        {
+          id: 't5',
+          accountId: 'acc_crypto',
+          dateTime: '2026-11-08T21:10',
+          session: 'New York',
+          pair: 'BTCUSDT',
+          direction: 'BUY',
+          pnlUsd: 217.50,
+          setup: '#Scalping',
+          sopScore: 4,
+          notes: 'Sweep low sesi Eropa lalu reclaim cepat di pembukaan Wall Street.'
+        },
+        {
+          id: 't6',
+          accountId: 'acc_xau',
+          dateTime: '2026-11-06T15:20',
+          session: 'London',
+          pair: 'XAUUSD',
+          direction: 'BUY',
+          pnlUsd: 150.00,
+          setup: '#Fibonacci',
+          sopScore: 4,
+          notes: 'Sabar menunggu retest golden pocket sesi London memberikan rasio RR 1:3 yang sangat bersih.'
+        }
+      ]
+    };
+
+    let appState = loadAppState();
+    let equityUnit = 'dollar';
+    let entryMode = 'quick';
+    let pnlSign = 1;
+    let calViewDate = new Date(2026, 10, 1);
+
+    function loadAppState() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (!raw) return JSON.parse(JSON.stringify(seedState));
+        const parsed = JSON.parse(raw);
+        if (!parsed.accounts || !parsed.accounts.length) parsed.accounts = seedState.accounts;
+        if (!Array.isArray(parsed.trades)) parsed.trades = seedState.trades;
+        return parsed;
+      } catch (e) {
+        return JSON.parse(JSON.stringify(seedState));
+      }
+    }
+
+    function saveAppState() {
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify(appState));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // ==================== HELPERS ====================
+    function detectSessionFromWib(dtStr) {
+      if (!dtStr || !dtStr.includes('T')) return 'London';
+      const hr = parseInt(dtStr.split('T')[1].split(':')[0], 10);
+      if (hr >= 6 && hr <= 13) return 'Asia';
+      if (hr >= 14 && hr <= 18) return 'London';
+      return 'New York';
+    }
+
+    function getCurrentWibString() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function notify(msg, isErr = false) {
+      const box = document.getElementById('toastContainer');
+      const item = document.createElement('div');
+      item.className = `pointer-events-auto bg-[#090D0B] border ${isErr ? 'border-rose-500/60 text-rose-200' : 'border-[#22C55E]/60 text-emerald-200'} rounded-xl px-4 py-3 text-xs font-semibold shadow-2xl flex items-center justify-between gap-2`;
+      item.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-white">✕</button>`;
+      box.appendChild(item);
+      setTimeout(() => item.remove(), 3200);
+    }
+
+    function getAccountInfo(id) {
+      return appState.accounts.find(a => a.id === id) || { name: 'Akun', initialBalance: 5000, targetPct: 10 };
+    }
+
+    function getScopedTrades() {
+      let list = [...appState.trades];
+      if (appState.activeAccountId !== 'ALL') {
+        list = list.filter(t => t.accountId === appState.activeAccountId);
+      }
+      if (appState.marketFilter === 'XAUUSD') {
+        list = list.filter(t => t.pair.includes('XAU'));
+      } else if (appState.marketFilter === 'CRYPTO') {
+        list = list.filter(t => !t.pair.includes('XAU'));
+      }
+      if (appState.timeFilter !== 'ALL' && list.length) {
+        const refDate = new Date('2026-11-13T23:59:59');
+        list = list.filter(t => {
+          const td = new Date(t.dateTime);
+          const diffDays = (refDate - td) / (1000 * 60 * 60 * 24);
+          if (appState.timeFilter === 'DAY') return diffDays <= 1;
+          if (appState.timeFilter === 'WEEK') return diffDays <= 7;
+          if (appState.timeFilter === 'MONTH') return diffDays <= 31;
+          return true;
+        });
+      }
+      return list.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime));
+    }
+
+    function getScopedInitialBalance() {
+      if (appState.activeAccountId === 'ALL') {
+        return appState.accounts.reduce((sum, a) => sum + Number(a.initialBalance || 0), 0);
+      }
+      return Number(getAccountInfo(appState.activeAccountId).initialBalance || 5000);
+    }
+
+    // ==================== NAVIGATION & FILTERS ====================
+    function switchTab(tab) {
+      const views = ['dashboard', 'journal', 'calendar', 'calculator', 'analytics', 'weekly', 'settings'];
+      const titles = {
+        dashboard: 'Dashboard Performa',
+        journal: 'Jurnal Transaksi',
+        calendar: 'Kalender PnL Harian',
+        calculator: 'Kalkulator Lot & Compounding',
+        analytics: 'Analitik Edge & Disiplin',
+        weekly: 'Weekly AI Scorecard',
+        settings: 'Pengaturan Akun & Cloud Sync'
+      };
+      views.forEach(v => {
+        document.getElementById(`view-${v}`).classList.toggle('hidden', v !== tab);
+      });
+      const titleEl = document.getElementById('desktopPageTitle');
+      if (titleEl) titleEl.textContent = titles[tab] || 'Edge Journal';
+
+      document.querySelectorAll('.side-nav-btn').forEach(btn => {
+        const active = btn.dataset.tab === tab;
+        btn.className = active
+          ? 'side-nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30 transition'
+          : 'side-nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-[#0F1612] border border-transparent transition';
+      });
+
+      document.querySelectorAll('.tab-pill').forEach(btn => {
+        const active = btn.dataset.tab === tab;
+        btn.className = active
+          ? 'tab-pill px-3 py-2 text-xs font-bold border-b-2 border-[#22C55E] text-[#22C55E]'
+          : 'tab-pill px-3 py-2 text-xs font-bold border-b-2 border-transparent text-gray-400';
+      });
+
+      document.querySelectorAll('.mob-nav-btn').forEach(btn => {
+        const active = btn.dataset.tab === tab;
+        btn.className = active
+          ? 'mob-nav-btn flex flex-col items-center gap-0.5 py-1 px-2 text-[#22C55E]'
+          : 'mob-nav-btn flex flex-col items-center gap-0.5 py-1 px-2 text-gray-400';
+      });
+
+      if (tab === 'analytics') renderAnalyticsView();
+      if (tab === 'weekly') renderWeeklyScorecard();
+      if (tab === 'calendar') renderCalendarView();
+      if (tab === 'settings') renderSettingsView();
+    }
+
+    function handleAccountChange(val) {
+      appState.activeAccountId = val;
+      saveAppState();
+      renderAll();
+    }
+
+    function setMarketFilter(mkt) {
+      appState.marketFilter = mkt;
+      document.querySelectorAll('.mkt-btn').forEach(b => {
+        const active = b.dataset.market === mkt;
+        b.className = active
+          ? 'mkt-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#22C55E] text-black transition'
+          : 'mkt-btn px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition';
+      });
+      saveAppState();
+      renderAll();
+    }
+
+    function setTimeFilter(tf) {
+      appState.timeFilter = tf;
+      document.querySelectorAll('.time-btn').forEach(b => {
+        const active = b.dataset.time === tf;
+        b.className = active
+          ? 'time-btn px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#22C55E] text-black transition'
+          : 'time-btn px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition';
+      });
+      saveAppState();
+      renderAll();
+    }
+
+    // ==================== DASHBOARD RENDERING ====================
+    function renderAccountSelector() {
+      const sel = document.getElementById('accountSelect');
+      const total = appState.accounts.reduce((s, a) => s + Number(a.initialBalance), 0);
+      let opts = `<option value="ALL">Semua Akun ($${total.toLocaleString()})</option>`;
+      opts += appState.accounts.map(a => `<option value="${a.id}">${a.name} ($${Number(a.initialBalance).toLocaleString()})</option>`).join('');
+      sel.innerHTML = opts;
+      sel.value = appState.activeAccountId;
+    }
+
+    function renderDashboardView() {
+      const trades = getScopedTrades();
+      const initCap = getScopedInitialBalance();
+      const netPnl = trades.reduce((s, t) => s + Number(t.pnlUsd), 0);
+      const balance = initCap + netPnl;
+      const growthPct = initCap > 0 ? (netPnl / initCap) * 100 : 0;
+
+      const wins = trades.filter(t => t.pnlUsd > 0);
+      const losses = trades.filter(t => t.pnlUsd < 0);
+      const winRate = trades.length ? (wins.length / trades.length) * 100 : 0;
+
+      const grossWin = wins.reduce((s, t) => s + t.pnlUsd, 0);
+      const grossLoss = Math.abs(losses.reduce((s, t) => s + t.pnlUsd, 0));
+      const pf = grossLoss > 0 ? (grossWin / grossLoss) : (grossWin > 0 ? 99.9 : 0);
+
+      const sopSum = trades.reduce((s, t) => s + (t.sopScore || 0), 0);
+      const sopPct = trades.length ? (sopSum / (trades.length * 4)) * 100 : 0;
+
+      document.getElementById('kpiBalance').textContent = `$${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      const pnlEl = document.getElementById('kpiNetPnl');
+      pnlEl.textContent = `${netPnl >= 0 ? '+' : '-'}$${Math.abs(netPnl).toFixed(2)} Net`;
+      pnlEl.className = `text-xs font-mono font-semibold mt-0.5 ${netPnl >= 0 ? 'text-[#22C55E]' : 'text-rose-400'}`;
+
+      const grEl = document.getElementById('kpiGrowth');
+      grEl.textContent = `${growthPct >= 0 ? '+' : ''}${growthPct.toFixed(2)}%`;
+      grEl.className = `text-lg sm:text-2xl font-extrabold font-mono mt-1 ${growthPct >= 0 ? 'text-[#22C55E]' : 'text-rose-400'}`;
+      document.getElementById('kpiInitialCap').textContent = `Modal: $${initCap.toLocaleString()}`;
+
+      document.getElementById('kpiWinRate').textContent = `${winRate.toFixed(1)}%`;
+      document.getElementById('kpiWinLoss').textContent = `${wins.length}W / ${losses.length}L (${trades.length} Trade)`;
+      document.getElementById('kpiProfitFactor').textContent = pf.toFixed(2);
+      document.getElementById('kpiSopAvg').textContent = `SOP Disiplin: ${sopPct.toFixed(0)}%`;
+
+      // Daily Drawdown Guard (latest date in trades)
+      const latestDay = trades.length ? trades[0].dateTime.slice(0, 10) : '2026-11-13';
+      const todayPnl = trades.filter(t => t.dateTime.startsWith(latestDay)).reduce((s, t) => s + t.pnlUsd, 0);
+      const todayPct = initCap > 0 ? (todayPnl / initCap) * 100 : 0;
+      document.getElementById('ddGuardDesc').textContent = `PnL Harian (${latestDay}): ${todayPnl >= 0 ? '+' : '-'}$${Math.abs(todayPnl).toFixed(2)} • Batas Max Loss: -3.0%`;
+      document.getElementById('ddGuardPct').textContent = `${todayPct >= 0 ? '+' : ''}${todayPct.toFixed(2)}%`;
+      const ddStatus = document.getElementById('ddGuardStatus');
+      if (todayPct <= -3) {
+        ddStatus.textContent = 'LOCKED';
+        ddStatus.className = 'px-1.5 py-0.5 rounded text-[10px] font-mono bg-rose-500/20 text-rose-400';
+      } else {
+        ddStatus.textContent = 'AMAN';
+        ddStatus.className = 'px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#22C55E]/20 text-[#22C55E]';
+      }
+
+      // Target Progress
+      const targetPct = appState.activeAccountId === 'ALL' ? 10 : (getAccountInfo(appState.activeAccountId).targetPct || 10);
+      const targetUsd = initCap * (targetPct / 100);
+      const ratio = targetPct > 0 ? Math.max(0, Math.min(100, (growthPct / targetPct) * 100)) : 0;
+      document.getElementById('targetProgressLabel').textContent = `${growthPct.toFixed(2)}% / ${targetPct.toFixed(1)}%`;
+      document.getElementById('targetProgressBar').style.width = `${ratio}%`;
+      document.getElementById('targetCurrentUsd').textContent = `Net: ${netPnl >= 0 ? '+' : '-'}$${Math.abs(netPnl).toFixed(2)}`;
+      document.getElementById('targetGoalUsd').textContent = `Target: +$${targetUsd.toFixed(2)}`;
+
+      renderEquitySvg(trades, initCap);
+      renderDailyBars(trades);
+      renderPortfolioCards();
+      renderRecentTrades(trades);
+    }
+
+    function setEquityUnit(unit) {
+      equityUnit = unit;
+      document.getElementById('eqBtnDollar').className = unit === 'dollar'
+        ? 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#22C55E] text-black transition'
+        : 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition';
+      document.getElementById('eqBtnPercent').className = unit === 'percent'
+        ? 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#22C55E] text-black transition'
+        : 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition';
+      renderDashboardView();
+    }
+
+    function renderEquitySvg(trades, initCap) {
+      const wrap = document.getElementById('equitySvgWrap');
+      const chrono = [...trades].reverse();
+      if (!chrono.length) {
+        wrap.innerHTML = `<div class="h-full flex items-center justify-center text-xs text-gray-500">Belum ada data transaksi.</div>`;
+        return;
+      }
+      let run = 0;
+      const pts = [{ lbl: 'Start', v: 0 }];
+      chrono.forEach((t, idx) => {
+        run += t.pnlUsd;
+        pts.push({
+          lbl: `#${idx + 1} ${t.pair}`,
+          v: equityUnit === 'dollar' ? run : (initCap > 0 ? (run / initCap) * 100 : 0)
+        });
+      });
+
+      const vals = pts.map(p => p.v);
+      const minV = Math.min(0, ...vals);
+      const maxV = Math.max(1, ...vals);
+      const span = (maxV - minV) || 1;
+      const w = 560, h = 200, px = 28, py = 20;
+
+      const mapped = pts.map((p, i) => ({
+        x: px + (i / Math.max(1, pts.length - 1)) * (w - px * 2),
+        y: h - py - ((p.v - minV) / span) * (h - py * 2),
+        ...p
+      }));
+
+      const pathD = mapped.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(' ');
+      const areaD = `${pathD} L ${mapped[mapped.length - 1].x.toFixed(1)} ${h - py} L ${mapped[0].x.toFixed(1)} ${h - py} Z`;
+
+      wrap.innerHTML = `
+        <svg viewBox="0 0 ${w} ${h}" class="w-full h-full overflow-visible">
+          <defs>
+            <linearGradient id="terraGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#22C55E" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#22C55E" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="${areaD}" fill="url(#terraGrad)"/>
+          <path d="${pathD}" fill="none" stroke="#22C55E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          ${mapped.map(c => `
+            <circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="4" fill="#000000" stroke="#22C55E" stroke-width="2.5">
+              <title>${c.lbl}: ${equityUnit === 'dollar' ? '$' + c.v.toFixed(2) : c.v.toFixed(2) + '%'}</title>
+            </circle>
+          `).join('')}
+        </svg>
+      `;
+    }
+
+    function renderDailyBars(trades) {
+      const wrap = document.getElementById('dailyBarWrap');
+      const byDay = {};
+      [...trades].reverse().forEach(t => {
+        const d = t.dateTime.slice(5, 10);
+        byDay[d] = (byDay[d] || 0) + t.pnlUsd;
+      });
+      const entries = Object.entries(byDay).slice(-7);
+      if (!entries.length) {
+        wrap.innerHTML = `<div class="w-full h-full flex items-center justify-center text-xs text-gray-500">Belum ada data harian.</div>`;
+        return;
+      }
+      const maxAbs = Math.max(1, ...entries.map(([, v]) => Math.abs(v)));
+      wrap.innerHTML = entries.map(([day, val]) => {
+        const pctH = Math.max(12, Math.round((Math.abs(val) / maxAbs) * 100));
+        const pos = val >= 0;
+        return `
+          <div class="flex-1 flex flex-col items-center justify-end h-full gap-1.5">
+            <span class="text-[9px] font-mono font-bold ${pos ? 'text-[#22C55E]' : 'text-rose-400'}">${pos ? '+' : '-'}$${Math.abs(Math.round(val))}</span>
+            <div class="w-full max-w-[34px] rounded-t-lg ${pos ? 'bg-[#22C55E]' : 'bg-rose-500'} transition-all" style="height: ${pctH}%"></div>
+            <span class="text-[10px] font-mono text-gray-400">${day}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderPortfolioCards() {
+      const grid = document.getElementById('portfolioCardsGrid');
+      grid.innerHTML = appState.accounts.map(acc => {
+        const accTrades = appState.trades.filter(t => t.accountId === acc.id);
+        const pnl = accTrades.reduce((s, t) => s + t.pnlUsd, 0);
+        const bal = Number(acc.initialBalance) + pnl;
+        const pct = acc.initialBalance > 0 ? (pnl / acc.initialBalance) * 100 : 0;
+        return `
+          <div onclick="handleAccountChange('${acc.id}')" class="cursor-pointer bg-[#090D0B] border ${appState.activeAccountId === acc.id ? 'border-[#22C55E]' : 'border-[#1A241E]'} hover:border-[#22C55E]/60 rounded-2xl p-4 transition">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-white">${acc.name}</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-black border border-[#1A241E] text-gray-400">${accTrades.length} Trade</span>
+            </div>
+            <div class="text-lg font-extrabold font-mono text-white mt-2">$${bal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div class="text-xs font-mono font-semibold mt-0.5 ${pnl >= 0 ? 'text-[#22C55E]' : 'text-rose-400'}">
+              ${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toFixed(2)} (${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%)
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTradeItemCard(t, withControls = false) {
+      const acc = getAccountInfo(t.accountId);
+      const pct = acc.initialBalance > 0 ? (t.pnlUsd / acc.initialBalance) * 100 : 0;
+      const win = t.pnlUsd >= 0;
+      return `
+        <div class="bg-black border border-[#1A241E] hover:border-[#22C55E]/40 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-mono font-extrabold text-sm text-white">${t.pair}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-extrabold ${t.direction === 'BUY' ? 'bg-[#22C55E]/20 text-[#22C55E]' : 'bg-rose-500/20 text-rose-400'}">${t.direction}</span>
+              <span class="px-2 py-0.5 rounded bg-[#090D0B] border border-[#1A241E] text-[10px] text-gray-300">${t.session}</span>
+              <span class="px-2 py-0.5 rounded bg-[#090D0B] border border-[#1A241E] text-[10px] font-mono text-[#F59E0B]">${t.setup || '#Setup'}</span>
+              <span class="px-2 py-0.5 rounded bg-[#090D0B] border border-[#1A241E] text-[10px] font-mono ${t.sopScore === 4 ? 'text-[#22C55E]' : 'text-amber-400'}">SOP ${t.sopScore}/4</span>
+            </div>
+            ${t.notes ? `<p class="text-xs text-gray-300">"${t.notes}"</p>` : ''}
+            <div class="text-[10px] font-mono text-gray-500">${t.dateTime.replace('T', ' ')} WIB • ${acc.name}</div>
+          </div>
+
+          <div class="flex sm:flex-col items-center sm:items-end justify-between gap-2 shrink-0">
+            <div class="text-right">
+              <div class="font-mono font-extrabold text-sm ${win ? 'text-[#22C55E]' : 'text-rose-400'}">${win ? '+' : '-'}$${Math.abs(t.pnlUsd).toFixed(2)}</div>
+              <div class="font-mono text-[11px] ${win ? 'text-emerald-300/80' : 'text-rose-300/80'}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%</div>
+            </div>
+            ${withControls ? `
+              <div class="flex items-center gap-1.5">
+                <button onclick="openTradeModal('${t.id}')" class="px-2.5 py-1 rounded-lg bg-[#090D0B] border border-[#1A241E] hover:border-[#22C55E] text-[11px] text-gray-300">Edit</button>
+                <button onclick="removeTradeItem('${t.id}')" class="px-2.5 py-1 rounded-lg bg-[#090D0B] border border-[#1A241E] hover:border-rose-500 text-[11px] text-rose-400">Hapus</button>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRecentTrades(trades) {
+      const box = document.getElementById('recentTradesContainer');
+      const slice = trades.slice(0, 4);
+      box.innerHTML = slice.length
+        ? slice.map(t => renderTradeItemCard(t, false)).join('')
+        : `<div class="text-xs text-gray-500 text-center py-4">Belum ada transaksi.</div>`;
+    }
+
+    // ==================== JURNAL VIEW ====================
+    function renderJournalView() {
+      const q = (document.getElementById('journalSearch')?.value || '').toLowerCase();
+      const sess = document.getElementById('journalSessionFilter')?.value || 'ALL';
+      const res = document.getElementById('journalResultFilter')?.value || 'ALL';
+
+      const list = getScopedTrades().filter(t => {
+        const mq = !q || t.pair.toLowerCase().includes(q) || (t.setup || '').toLowerCase().includes(q) || (t.notes || '').toLowerCase().includes(q);
+        const ms = sess === 'ALL' || t.session === sess;
+        const mr = res === 'ALL' || (res === 'WIN' && t.pnlUsd > 0) || (res === 'LOSS' && t.pnlUsd < 0);
+        return mq && ms && mr;
+      });
+
+      const el = document.getElementById('journalListContainer');
+      el.innerHTML = list.length
+        ? list.map(t => renderTradeItemCard(t, true)).join('')
+        : `<div class="bg-[#090D0B] border border-[#1A241E] rounded-2xl p-8 text-center text-xs text-gray-400">Tidak ada transaksi sesuai filter.</div>`;
+    }
+
+    function removeTradeItem(id) {
+      appState.trades = appState.trades.filter(t => t.id !== id);
+      saveAppState();
+      renderAll();
+      notify('Trade berhasil dihapus.');
+    }
+
+    // ==================== CALENDAR HEATMAP ====================
+    function changeCalMonth(delta) {
+      calViewDate = new Date(calViewDate.getFullYear(), calViewDate.getMonth() + delta, 1);
+      renderCalendarView();
+    }
+
+    function renderCalendarView() {
+      const y = calViewDate.getFullYear();
+      const m = calViewDate.getMonth();
+      const names = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      document.getElementById('calMonthTitle').textContent = `${names[m]} ${y}`;
+
+      const daily = {};
+      getScopedTrades().forEach(t => {
+        const k = t.dateTime.slice(0, 10);
+        if (!daily[k]) daily[k] = { pnl: 0, count: 0 };
+        daily[k].pnl += t.pnlUsd;
+        daily[k].count++;
+      });
+
+      const first = new Date(y, m, 1).getDay();
+      const totalDays = new Date(y, m + 1, 0).getDate();
+      let html = '';
+
+      for (let i = 0; i < first; i++) {
+        html += `<div class="h-16 sm:h-20 rounded-xl bg-black/40 border border-[#1A241E]/30"></div>`;
+      }
+      for (let d = 1; d <= totalDays; d++) {
+        const key = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const item = daily[key];
+        let cls = 'bg-black border-[#1A241E] text-gray-500';
+        let info = '';
+        if (item) {
+          if (item.pnl >= 0) {
+            cls = 'bg-[#22C55E]/20 border-[#22C55E]/50 text-[#22C55E]';
+            info = `<div class="font-mono font-bold text-[11px]">+$${Math.round(item.pnl)}</div><div class="text-[9px] text-gray-300">${item.count}x</div>`;
+          } else {
+            cls = 'bg-rose-500/20 border-rose-500/50 text-rose-400';
+            info = `<div class="font-mono font-bold text-[11px]">-$${Math.abs(Math.round(item.pnl))}</div><div class="text-[9px] text-gray-300">${item.count}x</div>`;
+          }
+        }
+        html += `
+          <div class="h-16 sm:h-20 rounded-xl border ${cls} p-2 flex flex-col justify-between">
+            <span class="text-xs font-bold">${d}</span>
+            <div>${info}</div>
+          </div>
+        `;
+      }
+      document.getElementById('calHeatmapGrid').innerHTML = html;
+    }
+
+    // ==================== CALCULATOR ====================
+    function runLotCalc() {
+      const bal = parseFloat(document.getElementById('calcAccBal').value) || 0;
+      const riskPct = parseFloat(document.getElementById('calcRiskPercent').value) || 0;
+      const sl = parseFloat(document.getElementById('calcSlDistance').value) || 1;
+      const inst = document.getElementById('calcInstrument').value;
+
+      document.getElementById('calcSlLabel').textContent = inst === 'XAUUSD' ? 'Stop Loss (Pips)' : 'Stop Loss (%)';
+      const riskUsd = bal * (riskPct / 100);
+
+      if (inst === 'XAUUSD') {
+        const lot = riskUsd / (sl * 10);
+        document.getElementById('calcLotResult').textContent = `${lot.toFixed(2)} Lot`;
+      } else {
+        const posSize = riskUsd / (sl / 100);
+        document.getElementById('calcLotResult').textContent = `$${Math.round(posSize).toLocaleString()} Size`;
+      }
+      document.getElementById('calcRiskDollarResult').textContent = `-$${riskUsd.toFixed(2)}`;
+    }
+
+    function runCompCalc() {
+      const init = parseFloat(document.getElementById('compInit').value) || 0;
+      const rate = (parseFloat(document.getElementById('compWeeklyPct').value) || 0) / 100;
+      const wks = parseInt(document.getElementById('compNumWeeks').value, 10) || 1;
+
+      const final = init * Math.pow(1 + rate, wks);
+      const gain = final - init;
+      const pct = init > 0 ? (gain / init) * 100 : 0;
+
+      document.getElementById('compFinalBal').textContent = `$${final.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('compNetGain').textContent = `+$${gain.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (+${pct.toFixed(1)}%)`;
+
+      const points = [Math.ceil(wks / 3), Math.ceil((wks * 2) / 3), wks];
+      document.getElementById('compStepsGrid').innerHTML = points.map(w => `
+        <div class="bg-black border border-[#1A241E] rounded-xl p-2">
+          <div class="text-[10px] text-gray-500">Week ${w}</div>
+          <div class="font-mono font-bold text-xs text-[#22C55E]">$${Math.round(init * Math.pow(1 + rate, w)).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    // ==================== ANALYTICS VIEW ====================
+    function renderAnalyticsView() {
+      const trades = getScopedTrades();
+      const sessions = {};
+      const days = {};
+      const setups = {};
+      const sops = { 'SOP Penuh (4/4)': { c: 0, w: 0, pnl: 0 }, 'Melanggar SOP (<4/4)': { c: 0, w: 0, pnl: 0 } };
+      const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+      trades.forEach(t => {
+        sessions[t.session] = sessions[t.session] || { c: 0, w: 0, pnl: 0 };
+        sessions[t.session].c++;
+        if (t.pnlUsd > 0) sessions[t.session].w++;
+        sessions[t.session].pnl += t.pnlUsd;
+
+        const dObj = new Date(t.dateTime);
+        const dn = isNaN(dObj) ? 'Lainnya' : dayNames[dObj.getDay()];
+        days[dn] = days[dn] || { c: 0, w: 0, pnl: 0 };
+        days[dn].c++;
+        if (t.pnlUsd > 0) days[dn].w++;
+        days[dn].pnl += t.pnlUsd;
+
+        const st = t.setup || '#Other';
+        setups[st] = setups[st] || { c: 0, w: 0, pnl: 0 };
+        setups[st].c++;
+        if (t.pnlUsd > 0) setups[st].w++;
+        setups[st].pnl += t.pnlUsd;
+
+        const sk = t.sopScore === 4 ? 'SOP Penuh (4/4)' : 'Melanggar SOP (<4/4)';
+        sops[sk].c++;
+        if (t.pnlUsd > 0) sops[sk].w++;
+        sops[sk].pnl += t.pnlUsd;
+      });
+
+      const fmtList = obj => Object.entries(obj)
+        .filter(([, v]) => v.c > 0)
+        .sort((a, b) => b[1].pnl - a[1].pnl)
+        .map(([k, v]) => `
+          <div class="bg-black border border-[#1A241E] rounded-xl p-3 flex items-center justify-between text-xs">
+            <div>
+              <div class="font-bold text-white">${k}</div>
+              <div class="text-[11px] text-gray-400">${v.c} Trade • WR ${((v.w / v.c) * 100).toFixed(0)}%</div>
+            </div>
+            <div class="font-mono font-extrabold ${v.pnl >= 0 ? 'text-[#22C55E]' : 'text-rose-400'}">
+              ${v.pnl >= 0 ? '+' : '-'}$${Math.abs(v.pnl).toFixed(2)}
+            </div>
+          </div>
+        `).join('') || `<div class="text-xs text-gray-500">Belum ada data.</div>`;
+
+      document.getElementById('analyticsSessionList').innerHTML = fmtList(sessions);
+      document.getElementById('analyticsDayList').innerHTML = fmtList(days);
+      document.getElementById('analyticsSetupList').innerHTML = fmtList(setups);
+      document.getElementById('analyticsSopList').innerHTML = fmtList(sops);
+    }
+
+    // ==================== WEEKLY AI SCORECARD ====================
+    function renderWeeklyScorecard() {
+      const trades = getScopedTrades();
+      const initCap = getScopedInitialBalance();
+      const wins = trades.filter(t => t.pnlUsd > 0).length;
+      const losses = trades.filter(t => t.pnlUsd < 0).length;
+      const wr = trades.length ? ((wins / trades.length) * 100).toFixed(1) : '0.0';
+      const net = trades.reduce((s, t) => s + t.pnlUsd, 0);
+      const growth = initCap > 0 ? ((net / initCap) * 100).toFixed(2) : '0.00';
+      const sopAvg = trades.length ? ((trades.reduce((s, t) => s + t.sopScore, 0) / (trades.length * 4)) * 100).toFixed(0) : '0';
+
+      const sessMap = {};
+      trades.forEach(t => sessMap[t.session] = (sessMap[t.session] || 0) + t.pnlUsd);
+      const bestSess = Object.entries(sessMap).sort((a, b) => b[1] - a[1])[0]?.[0] || '-';
+
+      document.getElementById('scNetPnl').textContent = `${net >= 0 ? '+' : '-'}$${Math.abs(net).toFixed(2)}`;
+      document.getElementById('scGrowth').textContent = `${net >= 0 ? '+' : ''}${growth}%`;
+      document.getElementById('scWinRate').textContent = `${wr}%`;
+      document.getElementById('scBestSession').textContent = bestSess;
+      document.getElementById('scSopRate').textContent = `${sopAvg}%`;
+
+      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const rows = trades.map((t, i) => {
+        const d = new Date(t.dateTime);
+        const dn = isNaN(d) ? '' : days[d.getDay()];
+        const acc = getAccountInfo(t.accountId);
+        const pct = acc.initialBalance > 0 ? ((t.pnlUsd / acc.initialBalance) * 100).toFixed(2) : '0.00';
+        return `${i + 1}. [${dn} ${t.dateTime.replace('T', ' ')} WIB | ${t.session}] ${t.pair} ${t.direction} | PnL: ${t.pnlUsd >= 0 ? '+' : '-'}$${Math.abs(t.pnlUsd).toFixed(2)} (${t.pnlUsd >= 0 ? '+' : ''}${pct}%) | Setup: ${t.setup} | SOP: ${t.sopScore}/4 | Catatan: ${t.notes || '-'}`;
+      }).join('\n');
+
+      document.getElementById('weeklyPromptBox').value =
+        `Halo Gemini, ini laporan jurnal trading mingguan aku dari Edge Journal. Tolong analisa kebiasaan trading aku, pola jam/hari terbaik & terburuk, setup yang paling menghasilkan vs merugikan, tingkat disiplin SOP, dan kasih saran konkret untuk minggu depan:\n\n` +
+        `=== RINGKASAN PERFORMA ===\n` +
+        `- Total Transaksi: ${trades.length} (${wins} Win / ${losses} Loss)\n` +
+        `- Win Rate: ${wr}%\n` +
+        `- Net PnL: ${net >= 0 ? '+' : '-'}$${Math.abs(net).toFixed(2)} (${net >= 0 ? '+' : ''}${growth}% Growth)\n\n` +
+        `=== DETAIL TRANSAKSI & LESSON LEARNED ===\n${rows}`;
+    }
+
+    function copyWeeklyGeminiPrompt() {
+      const box = document.getElementById('weeklyPromptBox');
+      box.select();
+      box.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      notify('Laporan & prompt berhasil disalin untuk Gemini!');
+    }
+
+    // ==================== CATAT TRADE MODAL LOGIC ====================
+    function switchEntryMode(mode) {
+      entryMode = mode;
+      document.getElementById('btnModeQuick').className = mode === 'quick'
+        ? 'py-2 px-3 rounded-lg text-xs font-bold bg-[#22C55E] text-black transition'
+        : 'py-2 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition';
+      document.getElementById('btnModeDetail').className = mode === 'detail'
+        ? 'py-2 px-3 rounded-lg text-xs font-bold bg-[#22C55E] text-black transition'
+        : 'py-2 px-3 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition';
+      document.getElementById('sectionQuickMode').classList.toggle('hidden', mode !== 'quick');
+      document.getElementById('sectionDetailMode').classList.toggle('hidden', mode !== 'detail');
+      updateLiveGrowthPreview();
+    }
+
+    function setFormDirection(dir) {
+      document.getElementById('formDirection').value = dir;
+      document.getElementById('btnDirBuy').className = dir === 'BUY'
+        ? 'rounded-lg text-xs font-extrabold bg-[#22C55E] text-black'
+        : 'rounded-lg text-xs font-extrabold text-gray-400';
+      document.getElementById('btnDirSell').className = dir === 'SELL'
+        ? 'rounded-lg text-xs font-extrabold bg-rose-500 text-white'
+        : 'rounded-lg text-xs font-extrabold text-gray-400';
+      calcDetailModePnl();
+    }
+
+    function setPnlSign(sign) {
+      pnlSign = sign;
+      document.getElementById('btnSignProfit').className = sign === 1
+        ? 'px-2.5 py-1 rounded text-[11px] font-extrabold bg-[#22C55E] text-black'
+        : 'px-2.5 py-1 rounded text-[11px] font-extrabold text-gray-400';
+      document.getElementById('btnSignLoss').className = sign === -1
+        ? 'px-2.5 py-1 rounded text-[11px] font-extrabold bg-rose-500 text-white'
+        : 'px-2.5 py-1 rounded text-[11px] font-extrabold text-gray-400';
+      updateLiveGrowthPreview();
+    }
+
+    function selectQuickPair(pair) {
+      document.getElementById('formPair').value = pair;
+    }
+
+    function toggleSetupTag(tag) {
+      document.getElementById('formSetupInput').value = tag;
+    }
+
+    function refreshFormSession() {
+      const dt = document.getElementById('formDateTime').value;
+      document.getElementById('formSessionBadge').textContent = detectSessionFromWib(dt);
+    }
+
+    function updateFormSopLabel() {
+      const c = document.querySelectorAll('.form-sop-cb:checked').length;
+      document.getElementById('formSopBadge').textContent = `${c}/4 SOP`;
+    }
+
+    function updateLiveGrowthPreview() {
+      const accId = document.getElementById('formAccountId').value;
+      const acc = getAccountInfo(accId);
+      let pnl = 0;
+      if (entryMode === 'quick') {
+        const raw = Math.abs(parseFloat(document.getElementById('formQuickAmount').value) || 0);
+        pnl = raw * pnlSign;
+      } else {
+        pnl = parseFloat(document.getElementById('formDetailPnl').value) || 0;
+      }
+      const pct = acc.initialBalance > 0 ? (pnl / acc.initialBalance) * 100 : 0;
+      const disp = document.getElementById('liveGrowthDisplay');
+      disp.textContent = `${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%`;
+      disp.className = `w-full bg-[#090D0B] border border-[#1A241E] rounded-xl px-3 py-2 text-sm font-mono font-bold ${pct >= 0 ? 'text-[#22C55E]' : 'text-rose-400'}`;
+    }
+
+    function calcDetailModePnl() {
+      const lot = parseFloat(document.getElementById('formLotSize').value);
+      const ent = parseFloat(document.getElementById('formEntryPrice').value);
+      const ext = parseFloat(document.getElementById('formExitPrice').value);
+      const mul = parseFloat(document.getElementById('formMultiplier').value) || 1;
+      const dir = document.getElementById('formDirection').value;
+      if (!isNaN(lot) && !isNaN(ent) && !isNaN(ext)) {
+        const diff = dir === 'BUY' ? (ext - ent) : (ent - ext);
+        document.getElementById('formDetailPnl').value = (diff * lot * mul).toFixed(2);
+        updateLiveGrowthPreview();
+      }
+    }
+
+    function openTradeModal(editId = null) {
+      const sel = document.getElementById('formAccountId');
+      sel.innerHTML = appState.accounts.map(a => `<option value="${a.id}">${a.name} ($${Number(a.initialBalance).toLocaleString()})</option>`).join('');
+
+      document.getElementById('tradeForm').reset();
+      document.getElementById('editTradeId').value = '';
+      document.querySelectorAll('.form-sop-cb').forEach(cb => cb.checked = true);
+      updateFormSopLabel();
+
+      if (editId) {
+        const t = appState.trades.find(x => x.id === editId);
+        if (t) {
+          document.getElementById('modalTitle').textContent = 'Edit Trade';
+          document.getElementById('editTradeId').value = t.id;
+          sel.value = t.accountId;
+          document.getElementById('formDateTime').value = t.dateTime;
+          document.getElementById('formPair').value = t.pair;
+          setFormDirection(t.direction);
+          setPnlSign(t.pnlUsd >= 0 ? 1 : -1);
+          document.getElementById('formQuickAmount').value = Math.abs(t.pnlUsd);
+          document.getElementById('formDetailPnl').value = t.pnlUsd;
+          document.getElementById('formSetupInput').value = t.setup || '';
+          document.getElementById('formNotes').value = t.notes || '';
+          const cbs = document.querySelectorAll('.form-sop-cb');
+          cbs.forEach((cb, i) => cb.checked = i < (t.sopScore || 4));
+          updateFormSopLabel();
+        }
+      } else {
+        document.getElementById('modalTitle').textContent = 'Catat Trade';
+        if (appState.activeAccountId !== 'ALL') sel.value = appState.activeAccountId;
+        document.getElementById('formDateTime').value = getCurrentWibString();
+        setFormDirection('BUY');
+        setPnlSign(1);
+        switchEntryMode('quick');
+      }
+
+      refreshFormSession();
+      updateLiveGrowthPreview();
+      document.getElementById('tradeModal').classList.remove('hidden');
+    }
+
+    function closeTradeModal() {
+      document.getElementById('tradeModal').classList.add('hidden');
+    }
+
+    function handleSaveTrade(e) {
+      e.preventDefault();
+      const id = document.getElementById('editTradeId').value || `tr_${Date.now()}`;
+      const accountId = document.getElementById('formAccountId').value;
+      const dateTime = document.getElementById('formDateTime').value;
+      const pair = document.getElementById('formPair').value.trim().toUpperCase();
+      const direction = document.getElementById('formDirection').value;
+
+      let pnlUsd = 0;
+      if (entryMode === 'quick') {
+        const raw = Math.abs(parseFloat(document.getElementById('formQuickAmount').value));
+        if (isNaN(raw)) {
+          notify('Masukkan nominal PnL ($) terlebih dahulu.', true);
+          return;
+        }
+        pnlUsd = raw * pnlSign;
+      } else {
+        pnlUsd = parseFloat(document.getElementById('formDetailPnl').value);
+        if (isNaN(pnlUsd)) {
+          notify('Lengkapi harga Entry/Exit atau hasil PnL ($).', true);
+          return;
+        }
+      }
+
+      const setup = document.getElementById('formSetupInput').value.trim() || '#PriceAction';
+      const sopScore = document.querySelectorAll('.form-sop-cb:checked').length;
+      const notes = document.getElementById('formNotes').value.trim();
+      const session = detectSessionFromWib(dateTime);
+
+      const record = {
+        id,
+        accountId,
+        dateTime,
+        session,
+        pair,
+        direction,
+        pnlUsd: Number(pnlUsd.toFixed(2)),
+        setup,
+        sopScore,
+        notes
+      };
+
+      const idx = appState.trades.findIndex(t => t.id === id);
+      if (idx >= 0) {
+        appState.trades[idx] = record;
+        notify(`Trade ${pair} diperbarui.`);
+      } else {
+        appState.trades.unshift(record);
+        notify(`Trade ${pair} (${pnlUsd >= 0 ? '+' : '-'}$${Math.abs(pnlUsd).toFixed(2)}) tersimpan!`);
+      }
+
+      saveAppState();
+      closeTradeModal();
+      renderAll();
+      pushTradeWebhook(record);
+    }
+
+    // ==================== SETTINGS: ACCOUNTS, CLOUD, BACKUP/RESTORE/CSV ====================
+    function renderSettingsView() {
+      document.getElementById('settingsWebhookInput').value = appState.webhookUrl || '';
+      const box = document.getElementById('settingsAccountsList');
+      box.innerHTML = appState.accounts.map(a => `
+        <div class="bg-black border border-[#1A241E] rounded-xl p-3 flex items-center justify-between text-xs">
+          <div>
+            <div class="font-bold text-white">${a.name}</div>
+            <div class="text-gray-400 font-mono">Modal: $${Number(a.initialBalance).toLocaleString()} • Target: ${a.targetPct || 10}%</div>
+          </div>
+          ${appState.accounts.length > 1 ? `<button onclick="deleteAccount('${a.id}')" class="text-rose-400 hover:underline font-semibold">Hapus</button>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function createAccount(e) {
+      e.preventDefault();
+      const name = document.getElementById('accFormName').value.trim();
+      const bal = parseFloat(document.getElementById('accFormBalance').value);
+      const targetPct = parseFloat(document.getElementById('accFormTargetPct').value) || 10;
+      if (!name || isNaN(bal) || bal <= 0) return;
+      const acc = { id: `acc_${Date.now()}`, name, initialBalance: bal, targetPct };
+      appState.accounts.push(acc);
+      appState.activeAccountId = acc.id;
+      saveAppState();
+      e.target.reset();
+      renderAll();
+      renderSettingsView();
+      notify(`Akun "${name}" berhasil ditambahkan.`);
+    }
+
+    function deleteAccount(id) {
+      appState.accounts = appState.accounts.filter(a => a.id !== id);
+      if (appState.activeAccountId === id) appState.activeAccountId = 'ALL';
+      saveAppState();
+      renderAll();
+      renderSettingsView();
+      notify('Akun dihapus.');
+    }
+
+    function updateCloudIndicator() {
+      const dot = document.getElementById('sidebarCloudDot');
+      const txt = document.getElementById('sidebarCloudText');
+      if (appState.webhookUrl) {
+        dot.className = 'w-2 h-2 rounded-full bg-[#22C55E] animate-pulse';
+        txt.textContent = 'Google Sheets Connected';
+      } else {
+        dot.className = 'w-2 h-2 rounded-full bg-gray-500';
+        txt.textContent = 'Local Storage';
+      }
+    }
+
+    function saveCloudWebhook() {
+      appState.webhookUrl = document.getElementById('settingsWebhookInput').value.trim();
+      saveAppState();
+      updateCloudIndicator();
+      notify('Webhook URL disimpan.');
+    }
+
+    async function pushTradeWebhook(trade) {
+      if (!appState.webhookUrl) return;
+      try {
+        await fetch(appState.webhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: 'NEW_TRADE', trade })
+        });
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    async function syncAllToCloud() {
+      if (!appState.webhookUrl) {
+        notify('Isi Google Apps Script URL terlebih dahulu.', true);
+        return;
+      }
+      await pushTradeWebhook({ syncAll: true, totalTrades: appState.trades.length, timestamp: new Date().toISOString() });
+      notify('Sinkronisasi ke Google Sheets terkirim!');
+    }
+
+    function exportJsonBackup() {
+      const blob = new Blob([JSON.stringify(appState, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `edge-journal-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      notify('File backup JSON berhasil diunduh.');
+    }
+
+    function importJsonBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data && Array.isArray(data.trades) && Array.isArray(data.accounts)) {
+            appState = data;
+            saveAppState();
+            renderAll();
+            renderSettingsView();
+            notify('Restore data JSON berhasil!');
+          } else {
+            notify('Format file JSON tidak valid.', true);
+          }
+        } catch (err) {
+          notify('Gagal membaca file JSON.', true);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function exportCsvFile() {
+      const headers = ['ID', 'Account', 'DateTime_WIB', 'Session', 'Pair', 'Direction', 'PnL_USD', 'Setup', 'SOP_Score', 'Notes'];
+      const rows = appState.trades.map(t => [
+        t.id,
+        `"${getAccountInfo(t.accountId).name}"`,
+        t.dateTime,
+        t.session,
+        t.pair,
+        t.direction,
+        t.pnlUsd,
+        `"${(t.setup || '').replace(/"/g, '""')}"`,
+        t.sopScore,
+        `"${(t.notes || '').replace(/"/g, '""')}"`
+      ].join(','));
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `edge-journal-trades-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      notify('Export CSV berhasil diunduh.');
+    }
+
+    // ==================== MASTER RENDER ====================
+    function renderAll() {
+      renderAccountSelector();
+      updateCloudIndicator();
+      renderDashboardView();
+      renderJournalView();
+      renderCalendarView();
+      renderAnalyticsView();
+      renderWeeklyScorecard();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      runLotCalc();
+      runCompCalc();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
